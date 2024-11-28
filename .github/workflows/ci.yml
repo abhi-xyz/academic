@@ -1,0 +1,32 @@
+name: Build and Deploy mdBook to Deno Deploy
+
+on:
+  push:
+    branches:
+      - master  # Or the branch you use for deployment
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Rust
+        uses: actions/setup-rust@v1
+        with:
+          rust-version: stable
+
+      - name: Install mdBook
+        run: |
+          cargo install mdbook
+
+      - name: Build mdBook
+        run: mdbook build
+
+      - name: Upload the build to Deno Deploy
+        uses: denoland/deploy-action@v1
+        with:
+          project-name: "your-deno-deploy-project"
+          entrypoint: "deploy.ts"
+          build-directory: "./book"
